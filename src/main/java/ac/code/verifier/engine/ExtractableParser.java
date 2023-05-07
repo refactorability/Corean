@@ -221,7 +221,7 @@ public class ExtractableParser extends ParserHelper {
 			switch (problem.getCodeFragmentResult().getResult()) {
 		    case BROKEN_STATEMENT:
 		    	String statmentName = mStateNameMap.containsKey(problem.getCodeFragmentResult().getType()) ? mStateNameMap.get(problem.getCodeFragmentResult().getType()) : problem.getCodeFragmentResult().getType();
-		    	return new VerifyResult(Result.ERROR, "Code fragment cannot be " + mActionVerb + " because there are multiple variables to return. " + "A code fragment marked as \"" + mFragmentName + "\" in the method "+ problem.getMethodData().getMethodName() + " of the class " + problem.getMethodData().getMethodBelongToClass() + "," + " contains a broken " + statmentName +" statement.", problem.getMethodData().getMethodSignature(), problem.getMethodData().getMethodBelongToClass());
+		    	return new VerifyResult(Result.ERROR, "Code fragment cannot be " + mActionVerb  + ". " + "A code fragment marked as \"" + mFragmentName + "\" in the method "+ problem.getMethodData().getMethodName() + " of the class " + problem.getMethodData().getMethodBelongToClass() + "," + " contains a broken " + statmentName +" statement.", problem.getMethodData().getMethodSignature(), problem.getMethodData().getMethodBelongToClass());
 			case ORPHAN_CASE:
 				return new VerifyResult(Result.ERROR, "Code fragment cannot be " + mActionVerb  + ". " + "A code fragment marked as \"" + mFragmentName + "\" in the method "+ problem.getMethodData().getMethodName() + " of the class " + problem.getMethodData().getMethodBelongToClass() + "," + " contains a \"case\" statement but does not contain the surrounding switch.", problem.getMethodData().getMethodSignature(), problem.getMethodData().getMethodBelongToClass());
 			case ORPHAN_BREAK:
