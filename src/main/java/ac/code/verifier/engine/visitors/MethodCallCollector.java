@@ -7,9 +7,16 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import ac.code.verifier.engine.data.MethodCallFromThisData;
 import ac.code.verifier.engine.visitors.helpers.VisitorHelper;
 
+/**
+ * The class MethodCallCollector collects data about method Call Expressions.
+ *
+ */
 public class MethodCallCollector extends VoidVisitorAdapter<List<MethodCallFromThisData>> {
 	
 
+	/**
+	 * Visits on the MethodCallExpr type nodes.
+	 */
 	 @Override
 	 public void visit(MethodCallExpr mfe, List<MethodCallFromThisData> collector) {
 		 super.visit(mfe, collector);
@@ -20,6 +27,11 @@ public class MethodCallCollector extends VoidVisitorAdapter<List<MethodCallFromT
 		 }
 	 }
 	 
+	 /**
+	  * Checks whether the called method belongs to the current class or to another class.
+	  * @param pMethodCallExpr - The method call expression
+	  * @return
+	  */
 	 boolean isMethodCallFromCurrentClass(MethodCallExpr pMethodCallExpr){
 		 Node n = pMethodCallExpr.getChildNodes().get(0);
 		 if(n.getMetaModel().toString().equals("NameExpr") || n.getMetaModel().toString().equals("FieldAccessExpr")) {

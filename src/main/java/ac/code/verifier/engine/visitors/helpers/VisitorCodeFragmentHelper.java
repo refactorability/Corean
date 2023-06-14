@@ -6,7 +6,18 @@ import com.github.javaparser.ast.Node;
 import ac.code.verifier.engine.CodeFragmentResult;
 import ac.code.verifier.engine.CodeFragmentResultEnum;
 
+/**
+ * The class VisitorCodeFragmentHelper provides methods that helping to get information about code fragments from AST.
+ *
+ */
 public class VisitorCodeFragmentHelper {
+	
+	/**
+	 * Checks whether the range contains only part of statement
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	public static CodeFragmentResult checkBrokenStatement(Node pNode, Range pFragmentRange) {
 		CodeFragmentResult res = verifyListOfStatements(pNode, pFragmentRange);
 		if(res != null) {
@@ -15,6 +26,12 @@ public class VisitorCodeFragmentHelper {
 		return new CodeFragmentResult(CodeFragmentResultEnum.OK, "");		
 	}
 	
+	/**
+	 * Checks whether the statement is orphan
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	public static CodeFragmentResult checkOrphanStatement(Node pNode, Range pFragmentRange) {		
 		CodeFragmentResult res = verifyRequiredParents(pNode, pFragmentRange);
 		if(res != null) {
@@ -23,6 +40,12 @@ public class VisitorCodeFragmentHelper {
 		return new CodeFragmentResult(CodeFragmentResultEnum.OK, "");		
 	}
 	
+	/**
+	 * Recursive method - checks whether the range contains only part of statement
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The fragments relative to which is being checked
+	 * @return
+	 */
 	private static CodeFragmentResult verifyListOfStatements(Node pNode, Range pFragmentRange) {
 		
 		if(pNode.getRange().get().begin.isBeforeOrEqual(pFragmentRange.begin) && pNode.getRange().get().end.isAfterOrEqual(pFragmentRange.end)) {
@@ -39,17 +62,23 @@ public class VisitorCodeFragmentHelper {
 		if(pNode.getRange().get().begin.isBefore(pFragmentRange.begin) && pNode.getRange().get().end.isAfter(pFragmentRange.begin) 
 				&& pNode.getRange().get().end.isBefore(pFragmentRange.end)){
 				return new CodeFragmentResult(CodeFragmentResultEnum.BROKEN_STATEMENT, pNode.getMetaModel().toString());
-			}
+		}
 			
-			if(pNode.getRange().get().begin.isAfter(pFragmentRange.begin) && pNode.getRange().get().begin.isBefore(pFragmentRange.end) 
-					&& pNode.getRange().get().end.isAfter(pFragmentRange.end)){
-					return new CodeFragmentResult(CodeFragmentResultEnum.BROKEN_STATEMENT, pNode.getMetaModel().toString());
-				}
+		if(pNode.getRange().get().begin.isAfter(pFragmentRange.begin) && pNode.getRange().get().begin.isBefore(pFragmentRange.end) 
+				&& pNode.getRange().get().end.isAfter(pFragmentRange.end)){
+				return new CodeFragmentResult(CodeFragmentResultEnum.BROKEN_STATEMENT, pNode.getMetaModel().toString());
+		}
 		
 		return null;
 		
-		}
+	}
 	
+	/**
+	 * Checks whether the range contains a required parents of the tested node.
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	private static CodeFragmentResult verifyRequiredParents(Node pNode, Range pFragmentRange) {
 		
 		if((pNode.getMetaModel().toString().equals("SwitchEntry")) && pFragmentRange.contains(pNode.getRange().get())){
@@ -84,6 +113,12 @@ public class VisitorCodeFragmentHelper {
 		return null;		
 	}
 	
+	/**
+	 * Checks whether the range contains parents node of the node of switch type.
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	private static boolean isParentOfSwitchEntryExists(Node pNode, Range pFragmentRange) {
 		Node node = pNode;
 		while(!(node.getMetaModel().toString().equals("MethodDeclaration") || node.getMetaModel().toString().equals("ConstructorDeclaration")) && node.getParentNode().isPresent()) {
@@ -98,6 +133,12 @@ public class VisitorCodeFragmentHelper {
 		return false;
 	}
 	
+	/**
+	 * Checks whether the range contains parents node of the node of break type.
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	private static boolean isParentOfBreakEntryExists(Node pNode, Range pFragmentRange) {
 		Node node = pNode;
 		while(!(node.getMetaModel().toString().equals("MethodDeclaration") || node.getMetaModel().toString().equals("ConstructorDeclaration")) && node.getParentNode().isPresent()) {		
@@ -115,6 +156,12 @@ public class VisitorCodeFragmentHelper {
 		return false;
 	}
 	
+	/**
+	 * Checks whether the range contains parents node of the node of loop type.
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	private static boolean isLoopParentExists(Node pNode, Range pFragmentRange) {
 		Node node = pNode;
 		while(!(node.getMetaModel().toString().equals("MethodDeclaration") || node.getMetaModel().toString().equals("ConstructorDeclaration")) && node.getParentNode().isPresent()) {
@@ -131,6 +178,12 @@ public class VisitorCodeFragmentHelper {
 		return false;
 	}
 	
+	/**
+	 * Checks whether the range contains parents node of the node of block type.
+	 * @param pNode The node being tested.
+	 * @param pFragmentRange The range of the fragment relative to which is being checked.
+	 * @return
+	 */
 	private static boolean isParentOfBlockExists(Node pNode, Range pFragmentRange) {
 		Node node = pNode; 
 		while(!node.getMetaModel().toString().equals("MethodDeclaration")){ //|| node.getMetaModel().toString().equals("ConstructorDeclaration")) && node.getParentNode().isPresent()) {

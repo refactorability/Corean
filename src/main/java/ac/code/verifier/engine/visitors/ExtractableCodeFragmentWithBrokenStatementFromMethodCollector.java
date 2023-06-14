@@ -13,14 +13,25 @@ import ac.code.verifier.engine.data.ExtractableCodeFragmentProblemData;
 import ac.code.verifier.engine.data.MethodData;
 import ac.code.verifier.engine.visitors.helpers.VisitorCodeFragmentHelper;
 
+/**
+ * The class ExtractableCodeFragmentWithBrokenStatementFromConstructorCollector collects data about broken statements in methods.
+ *
+ */
 public class ExtractableCodeFragmentWithBrokenStatementFromMethodCollector extends VoidVisitorAdapter<List<ExtractableCodeFragmentProblemData>> {
 	
 	private List<MethodData> mListMethodData;
 	
+	/**
+	 * Constructor
+	 * @param pListMethodData The list with information about methods.
+	 */
 	public ExtractableCodeFragmentWithBrokenStatementFromMethodCollector(List<MethodData> pListMethodData) {
 		mListMethodData = pListMethodData;
 	}
 	
+	/**
+	 * Visits on the MethodDeclaration type nodes. 
+	 */
 	 @Override
 	 public void visit(MethodDeclaration md, List<ExtractableCodeFragmentProblemData> collector) {
 		 super.visit(md, collector);

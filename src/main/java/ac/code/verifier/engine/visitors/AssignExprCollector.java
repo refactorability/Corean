@@ -19,8 +19,15 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import ac.code.verifier.engine.data.AssignExprData;
 import ac.code.verifier.engine.visitors.helpers.VisitorHelper;
 
+/**
+ * The class AssignExprCollector collects data about assign expressions from AST.
+ *
+ */
 public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>> {
 
+	/**
+	 * Visits on the AssignExpr type nodes.
+	 */
 	 @Override
 	 public void visit(AssignExpr ae, List<AssignExprData> collector) {
 		 super.visit(ae, collector);
@@ -42,6 +49,13 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 }	
 	 }
 	 
+	 /**
+	  * Checks whether the variable is an instance variable.
+	  * @param pCurentNode The current node.
+	  * @param pVarName The name of the tested variable.
+	  * @param pRange The range of the fragment relative to which is being checked.
+	  * @return
+	  */
 	 protected boolean isClassFieldMember(Node pCurentNode, String pVarName, Range pRange) {
 		 Node node = pCurentNode;
 		 
@@ -59,7 +73,7 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 
 		 node = node.getParentNode().get();		 
 		 while((!node.getMetaModel().toString().equals("ClassOrInterfaceDeclaration")) && node.getParentNode().isPresent()) {
-			if(isVarDeclaredInCurentLevel(node, pVarName)) {	
+			if(isVarDeclaredInCurrentLevel(node, pVarName)) {	
 				return false;
 			}
 			node = node.getParentNode().get();
@@ -71,6 +85,12 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 return false;
 	 }
 	 	 
+	 /**
+	  * Checks whether the variable is declared in class level.
+	  * @param pCurentNode The current node.
+	  * @param pVarName The name of the tested variable.
+	  * @return
+	  */
 	 protected boolean isVarDeclaredInClassLevel(Node pCurentNode, String pVarName) {
 		
 		 for(Node n : pCurentNode.getChildNodes()) {
@@ -98,6 +118,12 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 			return false;
 	 }
 	 
+	 /**
+	  * Checks whether the variable is a method parameter.
+	  * @param pCurentNode The current node.
+	  * @param pVarName The name of the tested variable.
+	  * @return
+	  */
 	 protected boolean isVarDeclaredInParameters(Node pCurentNode, String pVarName) {
 		 Node node = pCurentNode; 
 		 
@@ -134,7 +160,13 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 return false;
 	 }
 	 
-	 //Check if declared in current level "before" the use 
+	 /**
+	  * Checks whether the variable is declared in current level before the use.
+	  * @param pCurentNode The current node.
+	  * @param pVarName The name of the tested variable.
+	  * @param pRange The range of the fragment relative to which is being checked.
+	  * @return
+	  */
 	 protected boolean isVarDeclaredInFirstLevel(Node pCurentNode, String pVarName, Range pRange) {
 		  
 		 for(Node n : pCurentNode.getChildNodes()) {
@@ -162,7 +194,13 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 	 }
 	 
 	 
-	 protected boolean isVarDeclaredInCurentLevel(Node pCurentNode, String pVarName) {
+	 /**
+	  * Checks whether the variable id declared in the current level.
+	  * @param pCurentNode The current node.
+	  * @param pVarName The name of the tested variable.
+	  * @return
+	  */
+	 protected boolean isVarDeclaredInCurrentLevel(Node pCurentNode, String pVarName) {
 		  
 		 for(Node n : pCurentNode.getChildNodes()) {		  
 			 if(n.getMetaModel().toString().equals("VariableDeclarator")) {				 
@@ -184,7 +222,11 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 			return false;
 	 }
 
-	 
+	 /**
+	  * Extracts variable name from assign expression.
+	  * @param pFieldAccessExpr The full assign expression. 
+	  * @return
+	  */
 	 protected String getVarName(FieldAccessExpr pFieldAccessExpr) {
 		 String exp = pFieldAccessExpr.toString();		 
 		 String res = exp.substring(0, exp.indexOf("."));
@@ -195,7 +237,13 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 }
 		 return res;
 	}
-	 	 
+	 
+	 /**
+	  * Extracts list of declared variables from expression statement.
+	  * @param pExpressionStmt The expression statement.
+	  * @param pRange The range of the fragment relative to which is being checked.
+	  * @return
+	  */
 	 protected List<String> getDeclaredVarsFromExpressionStmt(ExpressionStmt pExpressionStmt, Range pRange){
 		 List<String> declaredVars = new ArrayList<String>();	 
 		 
@@ -211,7 +259,12 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 }
 		 return declaredVars;		 
 	 }
-	 	 
+	 
+	 /**
+	  * Extracts list of declared variables from field declaration.
+	  * @param pFieldDeclaration Field declaration
+	  * @return
+	  */
 	 protected List<String> getDeclaredVarsFromFieldDeclaration(FieldDeclaration pFieldDeclaration){
 		 List<String> declaredVars = new ArrayList<String>();	
 		 for(VariableDeclarator vd : pFieldDeclaration.getVariables()) {
@@ -219,7 +272,13 @@ public class AssignExprCollector extends VoidVisitorAdapter<List<AssignExprData>
 		 }
 		 return declaredVars;
 	 }
-	 	 
+	 
+	 /**
+	  * Extracts list of declared variables from variable declaration expression.
+	  * @param pVariableDeclarationExpr Variable declaration expression. 
+	  * @param pRange The range of the fragment relative to which is being checked.
+	  * @return
+	  */
 	 protected List<String> getDeclaredVarsFromVariableDeclarationExpr(VariableDeclarationExpr pVariableDeclarationExpr, Range pRange){
 		 List<String> declaredVars = new ArrayList<String>();
 		 

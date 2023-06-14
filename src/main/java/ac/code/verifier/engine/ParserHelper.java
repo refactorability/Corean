@@ -15,7 +15,7 @@ import ac.code.verifier.engine.data.MethodData;
 import ac.code.verifier.engine.visitors.AnnotatedConstructorsInfoCollector;
 import ac.code.verifier.engine.visitors.AnnotatedMethodsInfoCollector;
 import ac.code.verifier.engine.visitors.SynchronizedOnThisStmtCollector;
-import exceptions.FailedVerifyException;
+import ac.exceptions.FailedVerifyException;
 
 public abstract class ParserHelper {	
 	protected String mSourceFilePath;
@@ -25,22 +25,53 @@ public abstract class ParserHelper {
 	List<MethodData> mMethodData;
 	private final String MOVABLE_ANOTATION = "MovableMethod";
 	
+	/**
+	 * Returns the path to the parsed file.
+	 * @return
+	 */
 	public String getSourceFilePath() {
 		return mSourceFilePath;
 	}
 
+	/**
+	 * Returns the compilation unit the parsed file.
+	 * @return
+	 */
 	public CompilationUnit getRootCompilationUnit() {
 		return mRootCompilationUnit;
 	}
 	
+	/**
+	 * Constructor 
+	 * @param pAnotation The annotation we want to test.
+	 * @param pFilePath The path to the file containing the annotation.
+	 * @throws IOException
+	 * @throws FailedVerifyException
+	 */
 	public ParserHelper(String pAnotation, String pFilePath) throws IOException, FailedVerifyException {
 		init(pAnotation, pFilePath, true);
 	}
 	
-	public ParserHelper(String pAnotation, String pFilePath, boolean pReferToComments) throws IOException, FailedVerifyException{
-		init(pAnotation, pFilePath, pReferToComments);	
+	/**
+	 * Constructor 
+	 * @param pAnnotation The annotation we want to test
+	 * @param pFilePath The path to the file containing the annotation
+	 * @param pReferToComments Determines whether to parse the comments in the code as well.
+	 * @throws IOException
+	 * @throws FailedVerifyException
+	 */
+	public ParserHelper(String pAnnotation, String pFilePath, boolean pReferToComments) throws IOException, FailedVerifyException{
+		init(pAnnotation, pFilePath, pReferToComments);	
 	}
 	
+	/**
+	 * Initialization method
+	 * @param pAnotation The annotation we want to test
+	 * @param pFilePath The path to the file containing the annotation
+	 * @param pReferToComments Determines whether to parse the comments in the code as well.
+	 * @throws IOException
+	 * @throws FailedVerifyException
+	 */
 	private void init(String pAnotation, String pFilePath, boolean pReferToComments) throws IOException, FailedVerifyException {
 		mSourceFilePath = pFilePath;
         String sourceString = new String(Files.readAllBytes(Paths.get(mSourceFilePath)));
@@ -71,6 +102,13 @@ public abstract class ParserHelper {
 		ConstructorsInfoCollector.visit(mRootCompilationUnit, mMethodData);	
 	}
 	
+    /**
+     * Checks whether the method is marked by the annotation being tested.
+     * @param pClassName The name of the class that contains the method 
+     * @param pMethodName The name of method.
+     * @param pNumOfParams The number of parameters in the method.
+     * @return
+     */
 	protected boolean isAnotatedOrUknown(String pClassName, String pMethodName, int pNumOfParams) {
 		boolean find = false;
 		for(MethodData md : mMethodData) {
@@ -84,6 +122,12 @@ public abstract class ParserHelper {
 		return !find;
 	}
 	
+	/**
+	 * Checks whether the method is marked by the annotation being tested.
+     * @param pClassName The name of the class that contains the method 
+	 * @param pMethodSignature The full signature of the method.
+	 * @return
+	 */
 	protected boolean isAnotatedOrUknown(String pClassName, String pMethodSignature) {
 		boolean find = false;
 		for(MethodData md : mMethodData) {
@@ -97,6 +141,13 @@ public abstract class ParserHelper {
 		return !find;
 	}
 	
+	/**
+	 * Checks whether the method is marked by "MovableMethod" annotation.
+     * @param pClassName The name of the class that contains the method 
+     * @param pMethodName The name of method.
+     * @param pNumOfParams The number of parameters in the method.
+	 * @return
+	 */
 	protected boolean isMovableOrUknown(String pClassName, String pMethodName, int pNumOfParams) {
 		boolean find = false;
 		for(MethodData md : mMethodData) {
@@ -110,6 +161,12 @@ public abstract class ParserHelper {
 		return !find;
 	}
 	
+	/**
+	 * Checks whether the method is marked by "MovableMethod" annotation.
+     * @param pClassName The name of the class that contains the method 
+	 * @param pMethodSignature The full signature of the method.
+	 * @return
+	 */
 	protected boolean isMovableOrUknown(String pClassName, String pMethodSignature) {
 		boolean find = false;
 		for(MethodData md : mMethodData) {

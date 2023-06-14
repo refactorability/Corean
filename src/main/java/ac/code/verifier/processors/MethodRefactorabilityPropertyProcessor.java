@@ -6,17 +6,24 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import com.google.auto.service.AutoService;
-import ac.code.verifier.engine.MovableVerifier;
+import ac.code.verifier.engine.MethodPropertiesVerifier;
 import ac.code.verifier.helper.Result;
 import ac.code.verifier.helper.VerifyResult;
 
+/**
+ * The class implements all the abstract methods for configurable "RefactorableMethod" annotation.
+ *
+ */
 @SupportedAnnotationTypes("ac.collaborative.refactoring.annotations.RefactorableMethod")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class MethodRefactorabilityPropertyProcessor extends PropertyProcessor {
 	
+	/**
+	 * The method implement an abstract method - checks whether the annotated method fulfills the properties defined in the configuration file. 
+	 */
 	@Override
-	public VerifyResult verifyFile(TypeElement pAnnotation, String pSourceFilePath) {
+	protected VerifyResult verifyFile(String pAnnotation, String pSourceFilePath) {
 		if(refactorabilitySettings == null){
 		}
 		if((refactorabilitySettings == null) || (refactorabilitySettings.getMethodRefactorability() == null)) {
@@ -24,7 +31,7 @@ public class MethodRefactorabilityPropertyProcessor extends PropertyProcessor {
 			vr.setGeneralError(true);
 			return vr;
 		}
-		MovableVerifier verifier = new MovableVerifier(pAnnotation.getSimpleName().toString(), pSourceFilePath, refactorabilitySettings.getMethodRefactorability()); 
+		MethodPropertiesVerifier verifier = new MethodPropertiesVerifier(pAnnotation, pSourceFilePath, refactorabilitySettings.getMethodRefactorability()); 
 		return verifier.verify();
 	}
 }

@@ -7,11 +7,19 @@ import com.github.javaparser.Range;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 
+/**
+ * The class SwitchCoverageHandler provides methods that handle coverage of SwitchStmt.
+ *
+ */
 public class SwitchCoverageHandler {
 	
 	private Range mSwitchRange = null;
 	private List<CoverageChildNode> mSwitchStmtList = new ArrayList<CoverageChildNode>();
 
+	/**
+	 * Constructor
+	 * @param pSwitchStmt The SwitchStmt node.
+	 */
 	public SwitchCoverageHandler(SwitchStmt pSwitchStmt){
 		mSwitchRange = pSwitchStmt.getRange().get();
 
@@ -24,10 +32,19 @@ public class SwitchCoverageHandler {
 		Collections.sort(mSwitchStmtList);
 	}
 	
+	/**
+	 * Compares the current SwitchStmt node to other node by range.
+	 * @param pSwitchRange The range of the other node.
+	 * @return
+	 */
 	public boolean isSameSwitch(Range pSwitchRange){
 		return mSwitchRange.equals(pSwitchRange);
 	}
 	
+	/**
+	 * Checks whether the entire node is covered.
+	 * @return
+	 */
 	public boolean isCovered() {
 		if(mSwitchStmtList.get(0).isCovered) {
 			return true;
@@ -41,6 +58,10 @@ public class SwitchCoverageHandler {
 		return mSwitchStmtList.get(mSwitchStmtList.size()-1).isCovered;	
 	}
 	
+	/**
+	 * Determines that the given range belonging to the node is covered.
+	 * @param pRange The given range.
+	 */
 	public void setCoveredRange(Range pRange) {
 		for(CoverageChildNode ccn : mSwitchStmtList) {
 			if(ccn.getRange().equals(pRange)) {

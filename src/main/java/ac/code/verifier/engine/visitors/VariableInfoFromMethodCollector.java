@@ -24,14 +24,25 @@ import ac.code.verifier.engine.var.handlers.VariableDeclarationHandler;
 import ac.code.verifier.engine.var.handlers.VariableInfoHandler;
 import ac.code.verifier.engine.visitors.helpers.VisitorHelper;
 
+/**
+ * The class UnaryExprCollector collects data about local variable declared in methods.
+ *
+ */
 public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 
 	private List<MethodData> mListMethodData;
 	
+	/**
+	 * Constructor
+	 * @param pListMethodData The list with information about methods.
+	 */
 	public VariableInfoFromMethodCollector(List<MethodData> pListMethodData) {
 		mListMethodData = pListMethodData;
 	}
 	
+	/**
+	 * Visits on the MethodDeclaration type nodes.
+	 */
 	 @Override
 	 public void visit(MethodDeclaration md, Void arg) {
 		 super.visit(md, arg);		 
@@ -56,6 +67,12 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 scanLevel(bs, varInfoHandler, listOfKnownVariablesInScope);
 	 }
 
+	 /**
+	  * Collects information about variable  from the current level
+	  * @param pNode The tested node
+	  * @param pVarInfoHandler The variable handler.
+	  * @param pListOfKnownVariablesInScope The list of variables that already known in the current scope
+	  */
 	 private void scanLevel(Node pNode, VariableInfoHandler pVarInfoHandler, List<VariableDeclarationInfo> pListOfKnownVariablesInScope) {
 		 
 		 List<Node> childList = pNode.getChildNodes();
@@ -127,10 +144,20 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 }
 	 }
 	 
+	 /**
+	  * Checks whether variable declaration contains assignment.
+	  * @param pVariableDeclarator The tested declaration
+	  * @return
+	  */
 	 private boolean isVariableDeclaratorContainsAssign(VariableDeclarator pVariableDeclarator) {
 		return pVariableDeclarator.toString().contains("=");
 	 }
 	 
+	 /**
+	  * Checks whether the list of variables known in the current scope changes and therefore needs to be cloned.
+	  * @param pNode The tested node
+	  * @return
+	  */
 	 private boolean isCloneOfListOfKnownVariablesRequired(Node pNode) {
 		 String nodeMetaModel = pNode.getMetaModel().toString();
 		 if(nodeMetaModel.equals("BlockStmt")
@@ -155,6 +182,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 			 return false;	
 	 }
 	 
+	 /**
+	  * Checks whether this assign expression contains an instance variable 
+	  * @param pAssignExpr The tested assign expression
+	  * @return
+	  */
 	 private boolean isVarNameFromAssignExprIsInstanceVariable (AssignExpr pAssignExpr) {
 		 Node firstNode = pAssignExpr.getChildNodes().get(0);		 
 		 if(firstNode.getMetaModel().toString().equals("FieldAccessExpr")) {
@@ -163,6 +195,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return false;
 	}
 
+	 /**
+	  * Extracts variable name from assign expression.
+	  * @param pAssignExpr The assign expression.
+	  * @return
+	  */
 	 private String getVarNameFromAssignExpr (AssignExpr pAssignExpr) {
 		 Node firstNode = pAssignExpr.getChildNodes().get(0);		 
 		 String varName = "";
@@ -174,6 +211,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return varName;
 	}
 	 
+	 /**
+	  * Extracts variable name from unary expression.
+	  * @param pUnaryExpr The unary expression.
+	  * @return
+	  */
 	 private String getVarNameFromUnaryExpr(UnaryExpr pUnaryExpr) {
 		 Node firstNode = pUnaryExpr.getChildNodes().get(0);
 		 
@@ -187,10 +229,20 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return varName;
 	 }
 	 
+	 /**
+	  * Checks whether this field access expression contains an instance variable 
+	  * @param pFieldAccessExpr The tested field access expression.
+	  * @return
+	  */
 	 private boolean isVarNameFromFieldAccessExprIsInstanceVariable (FieldAccessExpr pFieldAccessExpr) {
 		 return pFieldAccessExpr.getChildNodes().get(0).getMetaModel().toString().equals("ThisExpr");	 
-	}
+	 }
 	 	 
+	 /**
+	  * Extracts variable name from field access expression.
+	  * @param pFieldAccessExpr The field access expression.
+	  * @return
+	  */
 	 private String getVarNameFromFieldAccessExpr (FieldAccessExpr pFieldAccessExpr) {
 		 String exp = pFieldAccessExpr.toString();		 
 		 String res = exp.substring(0, exp.indexOf("."));	
@@ -201,11 +253,21 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return res;
 	}
 	 
+	 /**
+	  * Checks whether this simple name is a parameter.
+	  * @param pSimpleName The tested simple name.
+	  * @return
+	  */
 	 private boolean isParameter(SimpleName pSimpleName) {	 
 		 Node parent = pSimpleName.getParentNode().get();		
 		 return parent.getMetaModel().toString().equals("Parameter");	 
 	 }
 	 
+	 /**
+	  * Checks whether this simple name is a variable name.
+	  * @param pSimpleName The tested simple name.
+	  * @return
+	  */
 	 private boolean isVarName(SimpleName pSimpleName) {	 
 		 Node parent = pSimpleName.getParentNode().get();
 		 
@@ -220,6 +282,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return true;		 
 	 }
 	 
+	 /**
+	  * Returns the block of the method. 
+	  * @param md Method declaration
+	  * @return
+	  */
 	 private BlockStmt getBlockStmtChild(MethodDeclaration md) {
 		 List<Node> childList = md.getChildNodes();
 		 if(childList.isEmpty()) {
@@ -234,6 +301,12 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return null;
 	 }
 	 
+	 /**
+	  * Adds method parameters.
+	  * @param md The method.
+	  * @param pVarInfoHandler The variable handler.
+	  * @param pListOfKnownVariablesInScope The list of variables that already known in the current scope.
+	  */
 	 private void addParameters(MethodDeclaration md, VariableInfoHandler pVarInfoHandler, List<VariableDeclarationInfo> pListOfKnownVariablesInScope) {
 		 
 		 NodeList<Parameter> parameters = md.getParameters();	
@@ -243,6 +316,12 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 }
 	 }
 	 
+	 /**
+	  * Adds instance variables.
+	  * @param md The method.
+	  * @param pVarInfoHandler The variable handler.
+	  * @param pListOfKnownVariablesInScope The list of variables that already known in the current scope.
+	  */
 	 private void addInstanceVariables(MethodDeclaration md, VariableInfoHandler pVarInfoHandler, List<VariableDeclarationInfo> pListOfKnownVariablesInScope) {
 		
 		 Node node = md;
@@ -286,7 +365,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 } 
 	 }
 	 
- 
+     /**
+      * Extracts declared variables from expression statement.
+      * @param pExpressionStmt The tested expression statement.
+      * @return
+      */
 	 private List<VariableDeclarationInfo> getDeclaredVarsFromExpressionStmt(ExpressionStmt pExpressionStmt){
 		 List<VariableDeclarationInfo> declaredVars = new ArrayList<VariableDeclarationInfo>();	 
 		 
@@ -302,6 +385,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return declaredVars;		 
 	 }
 	 
+	 /**
+	  * Extracts declared variables from field declaration.
+	  * @param pFieldDeclaration The tested field declaration.
+	  * @return
+	  */
 	 private List<VariableDeclarationInfo> getDeclaredVarsFromFieldDeclaration(FieldDeclaration pFieldDeclaration){
 		 List<VariableDeclarationInfo> declaredVars = new ArrayList<VariableDeclarationInfo>();	
 		 for(VariableDeclarator vd : pFieldDeclaration.getVariables()) {
@@ -310,6 +398,11 @@ public class VariableInfoFromMethodCollector extends VoidVisitorAdapter<Void> {
 		 return declaredVars;
 	 }
 	  
+	 /**
+	  * Extracts declared variables from variable declaration expression.
+	  * @param pVariableDeclarationExpr The tested variable declaration expression.
+	  * @return
+	  */
 	 private List<VariableDeclarationInfo> getDeclaredVarsFromVariableDeclarationExpr(VariableDeclarationExpr pVariableDeclarationExpr){
 		 List<VariableDeclarationInfo> declaredVars = new ArrayList<VariableDeclarationInfo>();
 		 

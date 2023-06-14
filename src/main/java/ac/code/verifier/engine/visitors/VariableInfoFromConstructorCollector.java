@@ -307,7 +307,6 @@ public class VariableInfoFromConstructorCollector extends VoidVisitorAdapter<Voi
 		 return declaredVars;		 
 	 }
 	 
-	 
 	 private List<VariableDeclarationInfo> getDeclaredVarsFromFieldDeclaration(FieldDeclaration pFieldDeclaration){
 		 List<VariableDeclarationInfo> declaredVars = new ArrayList<VariableDeclarationInfo>();	
 		 for(VariableDeclarator vd : pFieldDeclaration.getVariables()) {
@@ -315,7 +314,6 @@ public class VariableInfoFromConstructorCollector extends VoidVisitorAdapter<Voi
 		 }
 		 return declaredVars;
 	 }
-	 
 	 
 	 private List<VariableDeclarationInfo> getDeclaredVarsFromVariableDeclarationExpr(VariableDeclarationExpr pVariableDeclarationExpr){
 		 List<VariableDeclarationInfo> declaredVars = new ArrayList<VariableDeclarationInfo>();

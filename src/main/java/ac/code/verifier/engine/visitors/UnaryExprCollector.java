@@ -7,8 +7,14 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import ac.code.verifier.engine.data.AssignExprData;
 import ac.code.verifier.engine.visitors.helpers.VisitorHelper;
 
+/**
+ * The class UnaryExprCollector collects data about unary expressions.
+ */
 public class UnaryExprCollector extends AssignExprCollector{
 	
+	/**
+	 * Visits on the UnaryExpr type nodes.
+	 */
 	 @Override
 	 public void visit(UnaryExpr ue, List<AssignExprData> collector) {
 		 super.visit(ue, collector);

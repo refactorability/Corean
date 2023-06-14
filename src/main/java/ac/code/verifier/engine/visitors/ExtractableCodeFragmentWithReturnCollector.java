@@ -12,14 +12,24 @@ import ac.code.verifier.engine.coverage.handlers.FragmentCoverageHandler;
 import ac.code.verifier.engine.data.MethodData;
 import ac.code.verifier.engine.visitors.helpers.VisitorHelper;
 
+/**
+ * The class ExtractableCodeFragmentWithReturnCollector collects data about return statements.
+ *
+ */
 public class ExtractableCodeFragmentWithReturnCollector  extends VoidVisitorAdapter<Void> {
 
 	private List<MethodData> mListMethodData;
 	
+	/**
+	 * Constructor
+	 * @param pListMethodData The list with information about methods.
+	 */
 	public ExtractableCodeFragmentWithReturnCollector(List<MethodData> pListMethodData) {
 		mListMethodData = pListMethodData;
 	}
-	
+	/**
+	 * Visits on the ReturnStmt type nodes.
+	 */
 	 @Override
 	 public void visit(ReturnStmt rs, Void arg) {
 		 super.visit(rs, arg);

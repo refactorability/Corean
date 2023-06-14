@@ -10,14 +10,25 @@ import ac.code.verifier.engine.data.ExtractableCodeFragmentProblemData;
 import ac.code.verifier.engine.data.MethodData;
 import ac.code.verifier.engine.visitors.helpers.VisitorCodeFragmentHelper;
 
+/**
+ * The class ExtractableCodeFragmentWithOrphanStatmentFromConstructorCollector collects data about orphan statements in constructors.
+ *
+ */
 public class ExtractableCodeFragmentWithOrphanStatmentFromConstructorCollector extends VoidVisitorAdapter<List<ExtractableCodeFragmentProblemData>> {
 	
 	private List<MethodData> mListMethodData;
 	
+	/**
+	 * Constructor
+	 * @param pListMethodData The list with information about methods.
+	 */
 	public ExtractableCodeFragmentWithOrphanStatmentFromConstructorCollector(List<MethodData> pListMethodData) {
 		mListMethodData = pListMethodData;
 	}
 	
+	/**
+	 * Visits on the ConstructorDeclaration type nodes.
+	 */
 	 @Override
 	 public void visit(ConstructorDeclaration cd, List<ExtractableCodeFragmentProblemData> collector) {
 		 super.visit(cd, collector);

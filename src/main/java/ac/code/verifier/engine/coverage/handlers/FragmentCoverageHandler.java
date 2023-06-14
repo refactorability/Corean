@@ -7,6 +7,10 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 
+/**
+ * The class FragmentCoverageHandler provides methods that handle coverage of fragment.
+ *
+ */
 public class FragmentCoverageHandler {
 	
 	private Range mRange;
@@ -16,6 +20,10 @@ public class FragmentCoverageHandler {
 	private List<SwitchCoverageHandler> SwitchCoverageList;
 	private List<TryCoverageHandler> TryCoverageList;
 	
+	/**
+	 * Constructor
+	 * @param pRange The range of the fragment.
+	 */
 	public FragmentCoverageHandler(Range pRange){
 		mRange = pRange;
 		isCovered = false;
@@ -25,6 +33,11 @@ public class FragmentCoverageHandler {
 		TryCoverageList = new ArrayList<TryCoverageHandler>();
 	}
 	
+	/**
+	 * Marks covering of a child node for IfStmt node.
+	 * @param pIfStmt The parent IfStmt node.
+	 * @param pChildRange The range of a child node.
+	 */
 	public void coverChildOfIf(IfStmt pIfStmt, Range pChildRange) {	
 		for(IfCoverageHandler ifCoverageHandler : ifCoverageList) {
 			if(ifCoverageHandler.isSameIf(pIfStmt.getRange().get())) {
@@ -38,6 +51,11 @@ public class FragmentCoverageHandler {
 		ifCoverageList.add(newIfCoverageHandler);
 	}
 	
+	/**
+	 * Marks covering of a child node for SwitchStmt node.
+	 * @param pSwitchStmt The parent SwitchStmt node.
+	 * @param pChildRange The range of a child node.
+	 */
 	public void coverChildOfSwitch(SwitchStmt pSwitchStmt, Range pChildRange) {	
 		for(SwitchCoverageHandler switchCoverageHandler : SwitchCoverageList) {
 			if(switchCoverageHandler.isSameSwitch(pSwitchStmt.getRange().get())) {
@@ -51,6 +69,11 @@ public class FragmentCoverageHandler {
 		SwitchCoverageList.add(newSwitchCoverageHandler);
 	}
 	
+	/**
+	 * Marks covering of a child node for TryStmt node.
+	 * @param pTryStmt The parent TryStmt node.
+	 * @param pChildRange The range of a child node.
+	 */
 	public void coverChildOfTry(TryStmt pTryStmt, Range pChildRange) {	
 		for(TryCoverageHandler tryCoverageHandler : TryCoverageList) {
 			if(tryCoverageHandler.isSameTry(pTryStmt.getRange().get())) {
@@ -64,6 +87,11 @@ public class FragmentCoverageHandler {
 		TryCoverageList.add(newTryCoverageHandler);
 	}
 	
+	/**
+	 * Checks whether the entire IfStmt node is covered.
+	 * @param pIfStmt The tested IfStmt node.
+	 * @return
+	 */
 	public boolean isIfCovered(IfStmt pIfStmt) {	
 		for(IfCoverageHandler ifCoverageHandler : ifCoverageList) {
 			if(ifCoverageHandler.isSameIf(pIfStmt.getRange().get())) {
@@ -73,6 +101,11 @@ public class FragmentCoverageHandler {
 		return false;
 	}
 	
+	/**
+	 * Checks whether the entire SwitchStmt node is covered.
+	 * @param pSwitchStmt The tested SwitchStmt node.
+	 * @return
+	 */
 	public boolean isSwitchCovered(SwitchStmt pSwitchStmt) {	
 		for(SwitchCoverageHandler switchCoverageHandler : SwitchCoverageList) {
 			if(switchCoverageHandler.isSameSwitch(pSwitchStmt.getRange().get())) {
@@ -82,6 +115,11 @@ public class FragmentCoverageHandler {
 		return false;
 	}
 	
+	/**
+	 * Checks whether the entire TryStmt node is covered.
+	 * @param pTryStmt The tested TryStmt node.
+	 * @return
+	 */
 	public boolean isTryCovered(TryStmt pTryStmt) {	
 		for(TryCoverageHandler tryCoverageHandler : TryCoverageList) {
 			if(tryCoverageHandler.isSameTry(pTryStmt.getRange().get())) {
@@ -91,22 +129,40 @@ public class FragmentCoverageHandler {
 		return false;
 	}
 	
+	/**
+	 * Returns the range of the node.
+	 * @return
+	 */
 	public Range getRange() {
 		return mRange;
 	}
 	
+	/**
+	 * Checks whether the entire node is covered.
+	 * @return
+	 */
 	public boolean isCovered() {
 		return isCovered;
 	}
 	
+	/**
+	 * Determines that the entire node is covered.
+	 */
 	public void setCovered() {
 		isCovered = true;
 	}
 	
+	/**
+	 * Checks whether the examined expression exists.
+	 * @return
+	 */
 	public boolean isExaminedExpressionExists() {
 		return isExaminedExpressionExists;
 	}
 	
+	/**
+	 * Determines that the examined expression exists.
+	 */
 	public void setExaminedExpressionExists() {
 		isExaminedExpressionExists = true;
 	}

@@ -10,12 +10,21 @@ import javax.lang.model.element.Element;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-
+/**
+ * The class PathHelper provides methods that handle paths of the project.
+ *
+ */
 public class PathHelper {
 	
 	private final static String SRC = "src";
 	private final static String JAVA_EXTENSION = ".java";
 	
+	/**
+	 * Finds the full path of the source file that contains the element
+	 * @param pProcessingEnv The environment
+	 * @param prootElem The element
+	 * @return
+	 */
 	public static String getSourceFullPath(ProcessingEnvironment pProcessingEnv, Element prootElem) {
 		try {
 			String fileName = getSourceFileName(prootElem);
@@ -36,6 +45,12 @@ public class PathHelper {
 		}
 	}
 	
+	/**
+	 * Finds the full path of the configuration file.
+	 * @param pProcessingEnv The environment
+	 * @param prootElem The element
+	 * @return
+	 */
 	public static File getRefactorabilityConfigurationFullPath(ProcessingEnvironment pProcessingEnv, Element prootElem) {
 		try {
 			String fileName = getSourceFileName(prootElem);
@@ -53,7 +68,14 @@ public class PathHelper {
 			return null;
 		}
 	}
-				
+	
+	/**
+	 * Finds the target path of the file.
+	 * @param pProcessingEnv The environment
+	 * @param pFileName The name of the file
+	 * @return
+	 * @throws IOException
+	 */
 	private static String getTargetPath(ProcessingEnvironment pProcessingEnv, String pFileName) throws IOException {
 		FileObject fileObject = pProcessingEnv.getFiler().getResource( StandardLocation.CLASS_OUTPUT, "", pFileName);	
 		String targetPath = fileObject.toUri().getPath().toString();
@@ -65,6 +87,11 @@ public class PathHelper {
 	}
 	
 	
+	/**
+	 * Converts target path to path to the root of source files
+	 * @param pTargetPath The target path 
+	 * @return The root of source files
+	 */
 	private static String ConvertTargetPathToSourceRootPath(String pTargetPath) {
 		try {		    
 	    	Path path = Paths.get(pTargetPath);		
@@ -88,11 +115,21 @@ public class PathHelper {
 		}	
 	}
 	
+	/**
+	 * Converts element the name of the source file
+	 * @param pElem The element
+	 * @return
+	 */
 	private static String getSourceFileName(Element pElem) {
 		String path = pElem.toString();   
     	return path.substring(path.lastIndexOf(".") + 1) + JAVA_EXTENSION;	
 	}
 	
+	/**
+	 * Finds the relative path of the source file
+	 * @param pElem The element
+	 * @return
+	 */
 	private static String getSourceFileRelativePath(Element pElem) {
 		String path = pElem.toString();
 		if(!path.contains(".")) {
@@ -102,6 +139,14 @@ public class PathHelper {
 		return path.replaceAll("\\.","\\\\");
 	}
 	
+	/**
+	 * Recursive method, finds the full path to the file.
+	 * @param pFullPathFromRootUntilCurent The full path from the root to the tested folder.
+	 * @param pFileName The name of the file we are interested in.
+	 * @param pFullRelativePath The complete known relative path.
+	 * @param pRemainingRelativePath The part of the relative path we haven't found yet.
+	 * @return
+	 */
 	private static String findFileAbsolutePath(String pFullPathFromRootUntilCurent, String pFileName, String pFullRelativePath, String pRemainingRelativePath) {		
 		if (pRemainingRelativePath.isEmpty() && isFileExistsInCurentFolder(pFullPathFromRootUntilCurent, pFileName)) {
 			return Paths.get(pFullPathFromRootUntilCurent, pFileName).toString();		
@@ -137,7 +182,12 @@ public class PathHelper {
 		return "";	
 	}
 	
-	
+	/**
+	 * finds the full path of the file.
+	 * @param pFullPathFromRootUntilCurent The full path from the root to the tested folder.
+	 * @param pFileName The name of the file we are interested in.
+	 * @return
+	 */
 	private static String findFileWithoutPrefixAbsolutePath(String pFullPathFromRootUntilCurent, String pFileName) {
 		if (isFileExistsInCurentFolder(pFullPathFromRootUntilCurent, pFileName)) {
 			return Paths.get(pFullPathFromRootUntilCurent, pFileName).toString();		
@@ -158,10 +208,20 @@ public class PathHelper {
 		return "";
 	}
 
+	/**
+	 * Checks whether the path is a path to the src folder.
+	 * @param pPath The path 
+	 * @return
+	 */
 	private static boolean isSourcePath(Path pPath) {	
 		return pPath.getFileName().toString().equals(SRC);
 	}
 	
+	/**
+	 * Removes the first part from the path 
+	 * @param pPath The path 
+	 * @return
+	 */
 	private static String removeFirstPartFromPath(String pPath) {	
 		int indexOfFirstPart = pPath.indexOf("\\");
 		if (indexOfFirstPart == -1) {
@@ -170,8 +230,14 @@ public class PathHelper {
 		return pPath.substring(indexOfFirstPart+1);
 	}
 	
-	private static boolean isFileExistsInCurentFolder(String pCurentFolderPath, String pFileName) {	
-		File[] files = new File(pCurentFolderPath).listFiles(File::isFile);
+	/**
+	 * Checks if the file is in the current folder.
+	 * @param pCurrentFolderPath The path to the current folder
+	 * @param pFileName The name of the file.
+	 * @return
+	 */
+	private static boolean isFileExistsInCurentFolder(String pCurrentFolderPath, String pFileName) {	
+		File[] files = new File(pCurrentFolderPath).listFiles(File::isFile);
 		if (files!=null) {
 			for (File file  : files)
     		{
